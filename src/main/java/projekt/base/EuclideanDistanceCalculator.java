@@ -2,10 +2,10 @@ package projekt.base;
 
 public class EuclideanDistanceCalculator implements DistanceCalculator{
     /**
-     * calculate the distance between two locations
+     * calculate the euclidean distance between two locations
      * @param location1 a location gives
      * @param location2 a location gives
-     * @return the distance between two locations
+     * @return the euclidean distance between two locations
      */
     @Override
     public double calculateDistance(Location location1, Location location2) {

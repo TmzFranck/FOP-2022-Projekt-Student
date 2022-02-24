@@ -4,6 +4,11 @@ public class Location {
     private final int x;
     private final int y;
 
+    /**
+     * a constructor
+     * @param x x-coordinate
+     * @param y y-coordinate
+     */
     public Location(int x, int y){
         this.x = x;
         this.y = y;

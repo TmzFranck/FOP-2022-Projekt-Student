@@ -38,7 +38,7 @@ public class TimeInterval {
     }
 
     /**
-     * duration 
+     * duration
      * @return a duration time between two start and end
      */
     public Duration getDuration(){

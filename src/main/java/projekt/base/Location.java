@@ -1,17 +1,20 @@
 package projekt.base;
 
+/**
+ * the coordinates of the destinations.
+ */
 public class Location {
     private final int x;
     private final int y;
 
     /**
-     * a constructor
-     * @param x x-coordinate
-     * @param y y-coordinate
+     * a constructor.
+     * @param a x-coordinate
+     * @param b y-coordinate
      */
-    public Location(int x, int y){
-        this.x = x;
-        this.y = y;
+    public Location(final int a, final int b) {
+        this.x = a;
+        this.y = b;
     }
 
     /**
@@ -37,8 +40,9 @@ public class Location {
      * @param location a location gives
      * @return a new location
      */
-    public Location add(Location location){
-        return new Location(location.getX() + this.getX(), location.getY() + this.getY());
+    public Location add(final Location location) {
+        return new Location(location.getX() + this.getX(),
+            location.getY() + this.getY());
     }
 
     /**
@@ -49,7 +53,8 @@ public class Location {
      * @param location a location gives
      * @return a new location
      */
-    public Location subtract(Location location){
-        return new Location(this.getX() - location.getX(), this.getY() - location.getY());
+    public Location subtract(final Location location) {
+        return new Location(this.getX() - location.getX(),
+            this.getY() - location.getY());
     }
 }

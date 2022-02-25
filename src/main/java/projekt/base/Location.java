@@ -1,5 +1,8 @@
 package projekt.base;
 
+/**
+ * Location class records the location
+ */
 public class Location {
     private final int x;
     private final int y;

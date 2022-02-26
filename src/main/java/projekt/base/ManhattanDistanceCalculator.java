@@ -13,6 +13,7 @@ public class ManhattanDistanceCalculator implements DistanceCalculator {
      */
     @Override
     public double calculateDistance(final Location location1, final Location location2) {
-        return Math.abs(location1.getX() - location2.getX()) + Math.abs(location1.getY() - location2.getY());
+        return Math.abs(location1.getX() - location2.getX())
+            + Math.abs(location1.getY() - location2.getY());
     }
 }

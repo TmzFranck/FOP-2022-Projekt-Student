@@ -11,10 +11,7 @@ public class ChessboardDistanceCalculator implements DistanceCalculator {
      * @return the chessboard distance between two locations
      */
     @Override
-    public double calculateDistance(final Location location1,
-                                    final Location location2) {
-        return Math.max(Math.abs(location1.getX()
-            - location2.getX()), Math.abs(location1.getY()
-            - location2.getY()));
+    public double calculateDistance(final Location location1, final Location location2) {
+        return Math.max(Math.abs(location1.getX() - location2.getX()), Math.abs(location1.getY() - location2.getY()));
     }
 }

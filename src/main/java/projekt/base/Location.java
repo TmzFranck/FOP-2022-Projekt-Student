@@ -38,9 +38,11 @@ public class Location {
      * @return a new location
      */
     public Location add(final Location location) {
+
         return new Location(location.getX() + this.getX(),
             location.getY() + this.getY());
     }
+
     /**
      * They form the difference between their own
      * coordinates and those of the supplied Location
@@ -49,8 +51,9 @@ public class Location {
      * @param location a location gives
      * @return a new location
      */
+
     public Location subtract(final Location location) {
-        return new Location(this.getX() - location.getX(),
-            this.getY() - location.getY());
+
+        return new Location(this.getX() - location.getX(), this.getY() - location.getY());
     }
 }

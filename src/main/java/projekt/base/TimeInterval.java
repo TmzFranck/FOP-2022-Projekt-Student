@@ -15,6 +15,7 @@ public class TimeInterval {
      * @param starts the start time
      * @param ends the end time
      * @throws IllegalAccessException when start after end is
+     *
      */
     public TimeInterval(final LocalDateTime starts, final LocalDateTime ends)
         throws IllegalAccessException {

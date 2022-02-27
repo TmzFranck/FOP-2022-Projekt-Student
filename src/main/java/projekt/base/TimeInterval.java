@@ -12,24 +12,24 @@ public class TimeInterval {
 
     /**
      * a constructor.
-     * @param starts the start time
-     * @param ends the end time
+     * @param start the start time
+     * @param end the end time
      * @throws IllegalAccessException when start after end is
      *
      */
-    public TimeInterval(final LocalDateTime starts, final LocalDateTime ends)
+    public TimeInterval(final LocalDateTime start, final LocalDateTime end)
         throws IllegalAccessException {
-        if (starts == null) {
+        if (start == null) {
             throw new NullPointerException("start");
-        } else if (ends == null) {
+        } else if (end == null) {
             throw new NullPointerException("end");
         }
-        if (starts.isAfter(ends)) {
+        if (start.isAfter(end)) {
             throw new IllegalAccessException(String.format(
-                "Start %s is after end %s", starts, ends));
+                "Start %s is after end %s", start, end));
         }
-        this.start = starts;
-        this.end = ends;
+        this.start = start;
+        this.end = end;
     }
 
     /**

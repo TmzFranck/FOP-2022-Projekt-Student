@@ -11,4 +11,4 @@ public interface DistanceCalculator {
      * @return the distance between two locations
      */
     double calculateDistance(Location location1, Location location2);
-}
+

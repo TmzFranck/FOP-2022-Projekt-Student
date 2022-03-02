@@ -4,7 +4,13 @@ package projekt.base;
  * the coordinates of the destinations.
  */
 public class Location {
+    /**
+     * coordinate x.
+     */
     private final int x;
+    /**
+     * coordinate y.
+     */
     private final int y;
 
     /**
@@ -53,7 +59,7 @@ public class Location {
      */
 
     public Location subtract(final Location location) {
-
-        return new Location(this.getX() - location.getX(), this.getY() - location.getY());
+        return new Location(this.getX() - location.getX(),
+            this.getY() - location.getY());
     }
 }

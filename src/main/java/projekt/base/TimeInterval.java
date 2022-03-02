@@ -7,7 +7,13 @@ import java.time.LocalDateTime;
  * the determination of the permissible delivery times.
  */
 public class TimeInterval {
+    /**
+     * local date time start.
+     */
     private final LocalDateTime start;
+    /**
+     * local date time end.
+     */
     private final LocalDateTime end;
 
     /**

@@ -7,7 +7,7 @@ import java.util.function.UnaryOperator;
  */
 public interface Saucable extends Food {
     /**
-     *
+     * description of sauce
      * @return  a string identifying the sauce
      */
      String getSauce();

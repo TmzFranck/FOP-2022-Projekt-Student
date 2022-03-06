@@ -13,7 +13,7 @@ public class PastaImpl implements Pasta{
     private final double thickness;
     private final String sauce;
 
-    public PastaImpl(BigDecimal price, double weight, Food.Variant<Pasta, Config> foodVariant,
+    public PastaImpl(BigDecimal price, double weight, Food.Variant<Pasta, Pasta.Config> foodVariant,
                      List<Extra<Pasta.Config>> extras, double thickness, String sauce) {
         this.price = price;
         this.weight = weight;
@@ -59,7 +59,7 @@ public class PastaImpl implements Pasta{
      * @return The food variant
      */
     @Override
-    public Food.Variant<?, ?> getFoodVariant() {
+    public Food.Variant<Pasta, Pasta.Config> getFoodVariant() {
         return foodVariant;
     }
 
@@ -69,7 +69,7 @@ public class PastaImpl implements Pasta{
      * @return The extras that this food was configured with
      */
     @Override
-    public List<? extends Extra<?>> getExtras() {
+    public List<Extra<Pasta.Config>> getExtras() {
         return extras;
     }
 
@@ -89,5 +89,102 @@ public class PastaImpl implements Pasta{
     @Override
     public String getSauce() {
         return sauce;
+    }
+
+    private static class Config implements Saucable.Config{
+        private final UnaryOperator<BigDecimal> priceMutator;
+        private final DoubleUnaryOperator weightMutator;
+        private final UnaryOperator<String> sauceMutator;
+
+        private Config(UnaryOperator<BigDecimal> priceMutator, DoubleUnaryOperator weightMutator,
+                       UnaryOperator<String> sauceMutator) {
+            this.priceMutator = priceMutator;
+            this.weightMutator = weightMutator;
+            this.sauceMutator = sauceMutator;
+        }
+
+        /**
+         * Concatenates the result of all previous calls to this method with the provided {@code priceMutator}.
+         *
+         * <p>
+         * The provided {@link UnaryOperator} accepts the result produced by the function provided to the previous call to this
+         * method and produces a new price. The new price does not necessarily have to be different from the previous one, and
+         * may even be exactly the same value.
+         * </p>
+         *
+         * @param priceMutator A {@link UnaryOperator} which determines a new price based on the previous value
+         */
+        @Override
+        public void price(UnaryOperator<BigDecimal> priceMutator) {
+
+        }
+
+        /**
+         * The price mutator accepts a base price and produces a configured price.
+         *
+         * <p>
+         * The function returned by this method is the result of concatenating all previous inputs into the
+         * {@link #price(UnaryOperator)} method.
+         * </p>
+         *
+         * @return The price mutation function
+         */
+        @Override
+        public UnaryOperator<BigDecimal> getPriceMutator() {
+            return priceMutator;
+        }
+
+        /**
+         * Concatenates the result of all previous calls to this method with the provided {@code weightMutator}.
+         *
+         * <p>
+         * The provided {@link DoubleUnaryOperator} accepts the result produced by the function provided to the previous call to
+         * this method and produces a new weight. The new weight does not necessarily have to be different from the previous
+         * one, and may even be exactly the same value.
+         * </p>
+         *
+         * @param weightMutator A {@link DoubleUnaryOperator} which determines a new weight based on the previous value
+         */
+        @Override
+        public void weight(DoubleUnaryOperator weightMutator) {
+
+        }
+
+        /**
+         * The weight mutator accepts a base weight and produces a configured weight.
+         *
+         * <p>
+         * The function returned by this method is the result of concatenating all previous inputs into the
+         * {@link #weight(DoubleUnaryOperator)}  method.
+         * </p>
+         *
+         * @return The weight mutation function
+         */
+        @Override
+        public DoubleUnaryOperator getWeightMutator() {
+            return weightMutator;
+        }
+
+        /**
+         * chain the current sauce with given sauceMutator
+         * and save it internally
+         *
+         * @param sauceMutator the given sauceMutator
+         */
+        @Override
+        public void sauce(UnaryOperator<String> sauceMutator) {
+
+        }
+
+        /**
+         * getter method returns the internally saved
+         * sauceMutator
+         *
+         * @return the internally saved sauceMutator
+         */
+        @Override
+        public UnaryOperator<String> getSauceMutator() {
+            return sauceMutator;
+        }
     }
 }

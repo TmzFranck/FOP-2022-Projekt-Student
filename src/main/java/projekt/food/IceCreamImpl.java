@@ -14,7 +14,8 @@ public class IceCreamImpl implements IceCream {
     private final List<Extra<IceCream.Config>> extras;
 
     public IceCreamImpl(BigDecimal price, String flavor,
-                        double weight, Food.Variant<IceCream, Config> foodVariant, List<Extra<Config>> extras) {
+                        double weight, Food.Variant<IceCream,IceCream.Config> foodVariant,
+                        List<Extra<IceCream.Config>> extras) {
         this.price = price;
         this.flavor = flavor;
         this.weight = weight;
@@ -58,7 +59,7 @@ public class IceCreamImpl implements IceCream {
      * @return The food variant
      */
     @Override
-    public Food.Variant<?, ?> getFoodVariant() {
+    public Food.Variant<IceCream,IceCream.Config> getFoodVariant() {
         return foodVariant;
     }
 
@@ -68,7 +69,7 @@ public class IceCreamImpl implements IceCream {
      * @return The extras that this food was configured with
      */
     @Override
-    public List<? extends Extra<?>> getExtras() {
+    public List<Extra<IceCream.Config>> getExtras() {
         return extras;
     }
 
@@ -78,5 +79,78 @@ public class IceCreamImpl implements IceCream {
     @Override
     public String getFlavor() {
         return flavor;
+    }
+
+    private static class Config implements Food.Config{
+
+        private final UnaryOperator<BigDecimal> priceMutator;
+        private final DoubleUnaryOperator weightMutator;
+
+        private Config(UnaryOperator<BigDecimal> priceMutator, DoubleUnaryOperator weightMutator) {
+            this.priceMutator = priceMutator;
+            this.weightMutator = weightMutator;
+        }
+
+        /**
+         * Concatenates the result of all previous calls to this method with the provided {@code priceMutator}.
+         *
+         * <p>
+         * The provided {@link UnaryOperator} accepts the result produced by the function provided to the previous call to this
+         * method and produces a new price. The new price does not necessarily have to be different from the previous one, and
+         * may even be exactly the same value.
+         * </p>
+         *
+         * @param priceMutator A {@link UnaryOperator} which determines a new price based on the previous value
+         */
+        @Override
+        public void price(UnaryOperator<BigDecimal> priceMutator) {
+
+        }
+
+        /**
+         * The price mutator accepts a base price and produces a configured price.
+         *
+         * <p>
+         * The function returned by this method is the result of concatenating all previous inputs into the
+         * {@link #price(UnaryOperator)} method.
+         * </p>
+         *
+         * @return The price mutation function
+         */
+        @Override
+        public UnaryOperator<BigDecimal> getPriceMutator() {
+            return priceMutator;
+        }
+
+        /**
+         * Concatenates the result of all previous calls to this method with the provided {@code weightMutator}.
+         *
+         * <p>
+         * The provided {@link DoubleUnaryOperator} accepts the result produced by the function provided to the previous call to
+         * this method and produces a new weight. The new weight does not necessarily have to be different from the previous
+         * one, and may even be exactly the same value.
+         * </p>
+         *
+         * @param weightMutator A {@link DoubleUnaryOperator} which determines a new weight based on the previous value
+         */
+        @Override
+        public void weight(DoubleUnaryOperator weightMutator) {
+
+        }
+
+        /**
+         * The weight mutator accepts a base weight and produces a configured weight.
+         *
+         * <p>
+         * The function returned by this method is the result of concatenating all previous inputs into the
+         * {@link #weight(DoubleUnaryOperator)}  method.
+         * </p>
+         *
+         * @return The weight mutation function
+         */
+        @Override
+        public DoubleUnaryOperator getWeightMutator() {
+            return weightMutator;
+        }
     }
 }

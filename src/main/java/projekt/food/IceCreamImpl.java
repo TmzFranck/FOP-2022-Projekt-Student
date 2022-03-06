@@ -83,8 +83,8 @@ public class IceCreamImpl implements IceCream {
 
     private static class Config implements Food.Config{
 
-        private final UnaryOperator<BigDecimal> priceMutator;
-        private final DoubleUnaryOperator weightMutator;
+        private UnaryOperator<BigDecimal> priceMutator;
+        private DoubleUnaryOperator weightMutator;
 
         private Config(UnaryOperator<BigDecimal> priceMutator, DoubleUnaryOperator weightMutator) {
             this.priceMutator = priceMutator;
@@ -104,7 +104,7 @@ public class IceCreamImpl implements IceCream {
          */
         @Override
         public void price(UnaryOperator<BigDecimal> priceMutator) {
-
+            this.priceMutator = price -> priceMutator.apply(this.priceMutator.apply(price));
         }
 
         /**
@@ -135,7 +135,7 @@ public class IceCreamImpl implements IceCream {
          */
         @Override
         public void weight(DoubleUnaryOperator weightMutator) {
-
+            this.weightMutator = weight -> weightMutator.applyAsDouble(this.weightMutator.applyAsDouble(weight));
         }
 
         /**

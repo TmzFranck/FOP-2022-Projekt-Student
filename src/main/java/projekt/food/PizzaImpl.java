@@ -97,9 +97,9 @@ public class PizzaImpl implements Pizza {
      */
     private static class Config implements Saucable.Config{
 
-        private final UnaryOperator<BigDecimal> priceMutator;
-        private final DoubleUnaryOperator weightMutator;
-        private final UnaryOperator<String> sauceMutator;
+        private UnaryOperator<BigDecimal> priceMutator;
+        private DoubleUnaryOperator weightMutator;
+        private UnaryOperator<String> sauceMutator;
 
         public Config(UnaryOperator<BigDecimal> priceMutator, DoubleUnaryOperator weightMutator,
                        UnaryOperator<String> sauceMutator) {
@@ -122,7 +122,7 @@ public class PizzaImpl implements Pizza {
          */
         @Override
         public void price(UnaryOperator<BigDecimal> priceMutator) {
-
+            this.priceMutator = price -> priceMutator.apply(this.priceMutator.apply(price));
         }
 
         /**
@@ -153,7 +153,7 @@ public class PizzaImpl implements Pizza {
          */
         @Override
         public void weight(DoubleUnaryOperator weightMutator) {
-
+            this.weightMutator = weight -> weightMutator.applyAsDouble(this.weightMutator.applyAsDouble(weight));
         }
 
         /**
@@ -179,7 +179,7 @@ public class PizzaImpl implements Pizza {
          */
         @Override
         public void sauce(UnaryOperator<String> sauceMutator) {
-
+            this.sauceMutator = sauce -> sauceMutator.apply(this.sauceMutator.apply(sauce));
         }
 
         /**

@@ -31,4 +31,15 @@ public interface IceCream extends Food {
          */
         UnaryOperator<String> getFlavorMutator();
     }
+
+    /**
+     * A specific kind of ice cream.
+     */
+    interface Variant extends Food.Variant{
+        /**
+         * Getter method returns the base flavor.
+         * @return the base flavor
+         */
+        String getBaseFlavor();
+    }
 }

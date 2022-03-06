@@ -3,28 +3,28 @@ package projekt.food;
 import java.util.function.DoubleUnaryOperator;
 
 /**
- *
+ * pasta.
  */
 public interface Pasta extends Saucable {
     /**
      *
-     * @return the thickness of the pasta
+     * @return the thickness of the pasta.
      */
     double getThickness();
 
     /**
-     * TODO: add description
+     * config of pasta.
      */
     interface Config extends Saucable.Config {
         /**
-         * chain the current thickness with given thicknessMutator
+         * chain the current thickness with given thicknessMutator.
          * and save it internally
          * @param thicknessMutator the given thicknessMutator
          */
         void thickness(DoubleUnaryOperator thicknessMutator);
 
         /**
-         * getter method returns the internally saved
+         * getter method returns the internally saved.
          * thicknessMutator
          * @return internally saved thicknessMutator
          */
@@ -34,7 +34,7 @@ public interface Pasta extends Saucable {
     /**
      * A specific kind of Pasta depending on the thickness.
      */
-    interface Variant extends Saucable.Variant{
+    interface Variant extends Saucable.Variant {
         /**
          * Getter method returns teh base Thickness of the pasta.
          * @return the base thickness.

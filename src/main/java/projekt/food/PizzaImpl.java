@@ -6,15 +6,44 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.UnaryOperator;
 
 public class PizzaImpl implements Pizza {
+    /**
+     * the diameter of pizza.
+     */
     private final double diameter;
+    /**
+     * the price of pizza.
+     */
     private final BigDecimal price;
+    /**
+     * the sauce of pizza.
+     */
     private final String sauce;
+    /**
+     * the weight of pizza.
+     */
     private final double weight;
-    private final Food.Variant<Pizza,Pizza.Config> pizzaVariant;
+    /**
+     * the pizza variant.
+     */
+    private final Food.Variant<Pizza, Pizza.Config> pizzaVariant;
+    /**
+     * the extra of pizza.
+     */
     private final List<Extra<Pizza.Config>> extras;
 
-    public PizzaImpl(double diameter, BigDecimal price, String sauce, double weight, Food.Variant<Pizza,
-                    Pizza.Config> pizzaVariant, List<Extra<Pizza.Config>> extras) {
+    /**
+     * config the pizza.
+     * @param diameter the diameter of pizzaa
+     * @param price the price of pizza
+     * @param sauce the sauce of pizza
+     * @param weight weight of pizza
+     * @param pizzaVariant the pizza variant
+     * @param extras the extra of pizza
+     */
+    public PizzaImpl(final double diameter, final BigDecimal price,
+                     final String sauce, final double weight,
+                     final Food.Variant<Pizza, Pizza.Config> pizzaVariant,
+                     final List<Extra<Pizza.Config>> extras) {
         this.diameter = diameter;
         this.price = price;
         this.sauce = sauce;
@@ -83,7 +112,7 @@ public class PizzaImpl implements Pizza {
     }
 
     /**
-     * description of sauce
+     * description of sauce.
      *
      * @return a string identifying the sauce
      */
@@ -95,14 +124,29 @@ public class PizzaImpl implements Pizza {
     /**
      *
      */
-    private static class Config implements Saucable.Config{
-
+    private static class Config implements Saucable.Config {
+        /**
+         * the extra price of config.
+         */
         private UnaryOperator<BigDecimal> priceMutator;
+        /**
+         * the extra weight of config.
+         */
         private DoubleUnaryOperator weightMutator;
+        /**
+         * the extra sauce of config.
+         */
         private UnaryOperator<String> sauceMutator;
 
-        public Config(UnaryOperator<BigDecimal> priceMutator, DoubleUnaryOperator weightMutator,
-                       UnaryOperator<String> sauceMutator) {
+        /**
+         * config a pizza.
+         * @param priceMutator the extra price of config
+         * @param weightMutator the extra weight of config
+         * @param sauceMutator the extra sauce of config
+         */
+        public Config(final UnaryOperator<BigDecimal> priceMutator,
+                      final DoubleUnaryOperator weightMutator,
+                      final UnaryOperator<String> sauceMutator) {
             this.priceMutator = priceMutator;
             this.weightMutator = weightMutator;
             this.sauceMutator = sauceMutator;
@@ -172,7 +216,7 @@ public class PizzaImpl implements Pizza {
         }
 
         /**
-         * chain the current sauce with given sauceMutator
+         * chain the current sauce with given sauceMutator.
          * and save it internally
          *
          * @param sauceMutator the given sauceMutator
@@ -183,7 +227,7 @@ public class PizzaImpl implements Pizza {
         }
 
         /**
-         * getter method returns the internally saved
+         * getter method returns the internally saved.
          * sauceMutator
          *
          * @return the internally saved sauceMutator

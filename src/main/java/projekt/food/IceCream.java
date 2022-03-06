@@ -1,6 +1,6 @@
 package projekt.food;
 
-import java.util.function.DoubleUnaryOperator;
+
 import java.util.function.UnaryOperator;
 
 /**
@@ -22,7 +22,7 @@ public interface IceCream extends Food {
          * and save it internally
          * @param flavorMutator the given flavorMutator
          */
-        void thickness (UnaryOperator<String> flavorMutator);
+        void flavor (UnaryOperator<String> flavorMutator);
 
         /**
          * getter method returns the internally saved

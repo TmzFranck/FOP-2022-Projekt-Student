@@ -101,7 +101,7 @@ public class PizzaImpl implements Pizza {
         private final DoubleUnaryOperator weightMutator;
         private final UnaryOperator<String> sauceMutator;
 
-        private Config(UnaryOperator<BigDecimal> priceMutator, DoubleUnaryOperator weightMutator,
+        public Config(UnaryOperator<BigDecimal> priceMutator, DoubleUnaryOperator weightMutator,
                        UnaryOperator<String> sauceMutator) {
             this.priceMutator = priceMutator;
             this.weightMutator = weightMutator;

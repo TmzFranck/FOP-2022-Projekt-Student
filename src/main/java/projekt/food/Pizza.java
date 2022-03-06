@@ -22,7 +22,7 @@ public interface Pizza extends Saucable {
          * and save it internally
          * @param diameterMutator the given diameterMutator
          */
-        void diameter (DoubleUnaryOperator diameterMutator);
+        void diameter(DoubleUnaryOperator diameterMutator);
 
         /**
          * getter method returns the internally saved

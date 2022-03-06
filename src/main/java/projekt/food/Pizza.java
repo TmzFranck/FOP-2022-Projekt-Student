@@ -4,7 +4,7 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.UnaryOperator;
 
 /**
- *
+ * pizza.
  */
 public interface Pizza extends Saucable {
     /**
@@ -14,18 +14,18 @@ public interface Pizza extends Saucable {
     double getDiameter();
 
     /**
-     * TODO: add description
+     * config of pizza.
      */
     interface Config extends Saucable.Config {
         /**
-         * chain the current diameter with given diameterMutator
+         * chain the current diameter with given diameterMutator.
          * and save it internally
          * @param diameterMutator the given diameterMutator
          */
         void diameter(DoubleUnaryOperator diameterMutator);
 
         /**
-         * getter method returns the internally saved
+         * getter method returns the internally saved.
          * diameterMutator
          * @return internally saved diameterMutator
          */
@@ -35,7 +35,7 @@ public interface Pizza extends Saucable {
     /**
      * A specific kind of pizza depending on the diameter.
      */
-    interface Variant extends Food.Variant{
+    interface Variant extends Food.Variant {
         /**
          * Getter method returns the base diameter.
          * @return the base diameter.

@@ -14,18 +14,18 @@ public interface IceCream extends Food {
     String getFlavor();
 
     /**
-     * TODO: add description
+     * config the ice cream.
      */
     interface Config extends Food.Config {
         /**
-         * chain the current flavor with given flavorMutator
+         * chain the current flavor with given flavorMutator.
          * and save it internally
          * @param flavorMutator the given flavorMutator
          */
         void flavor(UnaryOperator<String> flavorMutator);
 
         /**
-         * getter method returns the internally saved
+         * getter method returns the internally saved.
          * flavorMutator
          * @return internally saved flavorMutator
          */
@@ -35,7 +35,7 @@ public interface IceCream extends Food {
     /**
      * A specific kind of ice cream.
      */
-    interface Variant extends Food.Variant{
+    interface Variant extends Food.Variant {
         /**
          * Getter method returns the base flavor.
          * @return the base flavor

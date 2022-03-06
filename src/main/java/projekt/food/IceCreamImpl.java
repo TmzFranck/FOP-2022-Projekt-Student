@@ -7,15 +7,38 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.UnaryOperator;
 
 public class IceCreamImpl implements IceCream {
+    /**
+     * price of ice cream.
+     */
     private final BigDecimal price;
+    /**
+     * flavor of ice cream.
+     */
     private final String flavor;
+    /**
+     * weight of ice cream.
+     */
     private final double weight;
-    private final Food.Variant<IceCream,IceCream.Config> foodVariant;
+    /**
+     * food variant of ice cream.
+     */
+    private final Food.Variant<IceCream, IceCream.Config> foodVariant;
+    /**
+     * extra of ice cream.
+     */
     private final List<Extra<IceCream.Config>> extras;
 
-    public IceCreamImpl(BigDecimal price, String flavor,
-                        double weight, Food.Variant<IceCream,IceCream.Config> foodVariant,
-                        List<Extra<IceCream.Config>> extras) {
+    /**
+     * config the ice cream.
+     * @param price the price of ice cream
+     * @param flavor the flavor of ice cream
+     * @param weight the weight of ice cream
+     * @param foodVariant the food variant of ice cream
+     * @param extras extra of ice cream
+     */
+    public IceCreamImpl(final BigDecimal price, final String flavor,
+                        final double weight, final Food.Variant<IceCream,IceCream.Config> foodVariant,
+                        final List<Extra<IceCream.Config>> extras) {
         this.price = price;
         this.flavor = flavor;
         this.weight = weight;
@@ -59,7 +82,7 @@ public class IceCreamImpl implements IceCream {
      * @return The food variant
      */
     @Override
-    public Food.Variant<IceCream,IceCream.Config> getFoodVariant() {
+    public Food.Variant<IceCream, IceCream.Config> getFoodVariant() {
         return foodVariant;
     }
 
@@ -81,12 +104,18 @@ public class IceCreamImpl implements IceCream {
         return flavor;
     }
 
-    private static class Config implements Food.Config{
+    private static class Config implements Food.Config {
 
+        /**
+         * the extra price for the configuration.
+         */
         private final UnaryOperator<BigDecimal> priceMutator;
+        /**
+         * the extra weight for the configuration.
+         */
         private final DoubleUnaryOperator weightMutator;
 
-        private Config(UnaryOperator<BigDecimal> priceMutator, DoubleUnaryOperator weightMutator) {
+        private Config(final UnaryOperator<BigDecimal> priceMutator, final DoubleUnaryOperator weightMutator) {
             this.priceMutator = priceMutator;
             this.weightMutator = weightMutator;
         }
@@ -103,7 +132,7 @@ public class IceCreamImpl implements IceCream {
          * @param priceMutator A {@link UnaryOperator} which determines a new price based on the previous value
          */
         @Override
-        public void price(UnaryOperator<BigDecimal> priceMutator) {
+        public void price(final UnaryOperator<BigDecimal> priceMutator) {
 
         }
 
@@ -134,7 +163,7 @@ public class IceCreamImpl implements IceCream {
          * @param weightMutator A {@link DoubleUnaryOperator} which determines a new weight based on the previous value
          */
         @Override
-        public void weight(DoubleUnaryOperator weightMutator) {
+        public void weight(final DoubleUnaryOperator weightMutator) {
 
         }
 

@@ -5,16 +5,45 @@ import java.util.List;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.UnaryOperator;
 
-public class PastaImpl implements Pasta{
+public class PastaImpl implements Pasta {
+    /**
+     * price of pasta.
+     */
     private final BigDecimal price;
+    /**
+     * weight of pasta.
+     */
     private final double weight;
-    private final Food.Variant<Pasta, Pasta.Config>foodVariant;
+    /**
+     * food variant of pasta.
+     */
+    private final Food.Variant<Pasta, Pasta.Config> foodVariant;
+    /**
+     * extra of pasta.
+     */
     private final List<Extra<Pasta.Config>> extras;
+    /**
+     * thickness of pasta.
+     */
     private final double thickness;
+    /**
+     * sauce of pasta
+     */
     private final String sauce;
 
-    public PastaImpl(BigDecimal price, double weight, Food.Variant<Pasta, Pasta.Config> foodVariant,
-                     List<Extra<Pasta.Config>> extras, double thickness, String sauce) {
+    /**
+     * config the pasta.
+     * @param price the price of pasta
+     * @param weight the weight of pasta
+     * @param foodVariant the food variant of pasta
+     * @param extras tha extra of pasta
+     * @param thickness the thickness of pasta
+     * @param sauce the sauce of pastaa
+     */
+    public PastaImpl(final BigDecimal price, final double weight,
+                     final Food.Variant<Pasta, Pasta.Config> foodVariant,
+                     final List<Extra<Pasta.Config>> extras,
+                     final double thickness, final String sauce) {
         this.price = price;
         this.weight = weight;
         this.foodVariant = foodVariant;
@@ -91,13 +120,22 @@ public class PastaImpl implements Pasta{
         return sauce;
     }
 
-    private static class Config implements Saucable.Config{
+    private static class Config implements Saucable.Config {
+        /**
+         * the extra price of config.
+         */
         private final UnaryOperator<BigDecimal> priceMutator;
+        /**
+         * the extra weight of config.
+         */
         private final DoubleUnaryOperator weightMutator;
+        /**
+         * the extra sauce of config
+         */
         private final UnaryOperator<String> sauceMutator;
 
-        private Config(UnaryOperator<BigDecimal> priceMutator, DoubleUnaryOperator weightMutator,
-                       UnaryOperator<String> sauceMutator) {
+        private Config(final UnaryOperator<BigDecimal> priceMutator, final DoubleUnaryOperator weightMutator,
+                       final UnaryOperator<String> sauceMutator) {
             this.priceMutator = priceMutator;
             this.weightMutator = weightMutator;
             this.sauceMutator = sauceMutator;
@@ -115,7 +153,7 @@ public class PastaImpl implements Pasta{
          * @param priceMutator A {@link UnaryOperator} which determines a new price based on the previous value
          */
         @Override
-        public void price(UnaryOperator<BigDecimal> priceMutator) {
+        public void price(final UnaryOperator<BigDecimal> priceMutator) {
 
         }
 
@@ -146,7 +184,7 @@ public class PastaImpl implements Pasta{
          * @param weightMutator A {@link DoubleUnaryOperator} which determines a new weight based on the previous value
          */
         @Override
-        public void weight(DoubleUnaryOperator weightMutator) {
+        public void weight(final DoubleUnaryOperator weightMutator) {
 
         }
 
@@ -172,7 +210,7 @@ public class PastaImpl implements Pasta{
          * @param sauceMutator the given sauceMutator
          */
         @Override
-        public void sauce(UnaryOperator<String> sauceMutator) {
+        public void sauce(final UnaryOperator<String> sauceMutator) {
 
         }
 

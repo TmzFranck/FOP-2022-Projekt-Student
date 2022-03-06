@@ -31,4 +31,15 @@ public interface Pizza extends Saucable {
          */
         DoubleUnaryOperator getDiameterMutator();
     }
+
+    /**
+     * A specific kind of pizza depending on the diameter.
+     */
+    interface Variant extends Food.Variant{
+        /**
+         * Getter method returns the base diameter.
+         * @return the base diameter.
+         */
+        double getBaseDiameter();
+    }
 }

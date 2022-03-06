@@ -69,7 +69,11 @@ public class PastaImpl implements Pasta{
      * @return The extras that this food was configured with
      */
     @Override
+<<<<<<< Updated upstream
     public List<Extra<Pasta.Config>> getExtras() {
+=======
+    public List<? extends Extra<Pasta.Config>> getExtras() {
+>>>>>>> Stashed changes
         return extras;
     }
 

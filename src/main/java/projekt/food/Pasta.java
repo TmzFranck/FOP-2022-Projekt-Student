@@ -21,7 +21,7 @@ public interface Pasta extends Saucable {
          * and save it internally
          * @param thicknessMutator the given thicknessMutator
          */
-        void thickness (DoubleUnaryOperator thicknessMutator);
+        void thickness(DoubleUnaryOperator thicknessMutator);
 
         /**
          * getter method returns the internally saved

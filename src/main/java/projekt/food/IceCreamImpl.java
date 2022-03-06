@@ -109,11 +109,11 @@ public class IceCreamImpl implements IceCream {
         /**
          * the extra price for the configuration.
          */
-        private final UnaryOperator<BigDecimal> priceMutator;
+        private UnaryOperator<BigDecimal> priceMutator;
         /**
          * the extra weight for the configuration.
          */
-        private final DoubleUnaryOperator weightMutator;
+        private DoubleUnaryOperator weightMutator;
 
         private Config(final UnaryOperator<BigDecimal> priceMutator, final DoubleUnaryOperator weightMutator) {
             this.priceMutator = priceMutator;
@@ -132,8 +132,8 @@ public class IceCreamImpl implements IceCream {
          * @param priceMutator A {@link UnaryOperator} which determines a new price based on the previous value
          */
         @Override
-        public void price(final UnaryOperator<BigDecimal> priceMutator) {
-
+        public void price(UnaryOperator<BigDecimal> priceMutator) {
+            this.priceMutator = price -> priceMutator.apply(this.priceMutator.apply(price));
         }
 
         /**
@@ -163,8 +163,8 @@ public class IceCreamImpl implements IceCream {
          * @param weightMutator A {@link DoubleUnaryOperator} which determines a new weight based on the previous value
          */
         @Override
-        public void weight(final DoubleUnaryOperator weightMutator) {
-
+        public void weight(DoubleUnaryOperator weightMutator) {
+            this.weightMutator = weight -> weightMutator.applyAsDouble(this.weightMutator.applyAsDouble(weight));
         }
 
         /**

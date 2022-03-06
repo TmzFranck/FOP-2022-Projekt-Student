@@ -124,15 +124,15 @@ public class PastaImpl implements Pasta {
         /**
          * the extra price of config.
          */
-        private final UnaryOperator<BigDecimal> priceMutator;
+        private UnaryOperator<BigDecimal> priceMutator;
         /**
          * the extra weight of config.
          */
-        private final DoubleUnaryOperator weightMutator;
+        private DoubleUnaryOperator weightMutator;
         /**
          * the extra sauce of config
          */
-        private final UnaryOperator<String> sauceMutator;
+        private UnaryOperator<String> sauceMutator;
 
         private Config(final UnaryOperator<BigDecimal> priceMutator, final DoubleUnaryOperator weightMutator,
                        final UnaryOperator<String> sauceMutator) {
@@ -153,8 +153,8 @@ public class PastaImpl implements Pasta {
          * @param priceMutator A {@link UnaryOperator} which determines a new price based on the previous value
          */
         @Override
-        public void price(final UnaryOperator<BigDecimal> priceMutator) {
-
+        public void price(UnaryOperator<BigDecimal> priceMutator) {
+            this.priceMutator = price -> priceMutator.apply(this.priceMutator.apply(price));
         }
 
         /**
@@ -184,8 +184,8 @@ public class PastaImpl implements Pasta {
          * @param weightMutator A {@link DoubleUnaryOperator} which determines a new weight based on the previous value
          */
         @Override
-        public void weight(final DoubleUnaryOperator weightMutator) {
-
+        public void weight(DoubleUnaryOperator weightMutator) {
+            this.weightMutator = weight -> weightMutator.applyAsDouble(this.weightMutator.applyAsDouble(weight));
         }
 
         /**
@@ -210,8 +210,8 @@ public class PastaImpl implements Pasta {
          * @param sauceMutator the given sauceMutator
          */
         @Override
-        public void sauce(final UnaryOperator<String> sauceMutator) {
-
+        public void sauce(UnaryOperator<String> sauceMutator) {
+            this.sauceMutator = sauce -> sauceMutator.apply(this.sauceMutator.apply(sauce));
         }
 
         /**

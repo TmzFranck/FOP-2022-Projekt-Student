@@ -22,7 +22,7 @@ public interface IceCream extends Food {
          * and save it internally
          * @param flavorMutator the given flavorMutator
          */
-        void flavor (UnaryOperator<String> flavorMutator);
+        void flavor(UnaryOperator<String> flavorMutator);
 
         /**
          * getter method returns the internally saved

@@ -21,7 +21,7 @@ public interface Saucable extends Food {
          * and save it internally
          * @param sauceMutator the given sauceMutator
          */
-         void sauce (UnaryOperator<String> sauceMutator);
+         void sauce(UnaryOperator<String> sauceMutator);
 
         /**
          * getter method returns the internally saved

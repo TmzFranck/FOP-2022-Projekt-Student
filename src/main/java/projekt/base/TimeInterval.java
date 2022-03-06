@@ -56,7 +56,7 @@ public class TimeInterval {
 
     /**
      *
-     * @return a duration time between two start and end
+     * @return a duration time between start and end
      */
     public Duration getDuration() {
         return Duration.between(getStart(), getEnd());

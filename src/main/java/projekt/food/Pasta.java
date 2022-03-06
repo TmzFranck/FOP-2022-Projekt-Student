@@ -30,4 +30,15 @@ public interface Pasta extends Saucable {
          */
         DoubleUnaryOperator getThicknessMutator();
     }
+
+    /**
+     * A specific kind of Pasta depending on the thickness.
+     */
+    interface Variant extends Saucable.Variant{
+        /**
+         * Getter method returns teh base Thickness of the pasta.
+         * @return the base thickness.
+         */
+        double getBaseThickness();
+    }
 }

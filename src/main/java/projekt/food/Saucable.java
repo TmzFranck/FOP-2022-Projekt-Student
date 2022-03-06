@@ -30,4 +30,16 @@ public interface Saucable extends Food {
          */
          UnaryOperator<String> getSauceMutator();
      }
+
+    /**
+     * A specific kind of base Sauce
+     */
+    interface Variant extends Food.Variant{
+        /**
+         * Getter method returns the base sauce.
+         * @return the base sauce
+         */
+
+         String getBaseSauce();
+     }
 }

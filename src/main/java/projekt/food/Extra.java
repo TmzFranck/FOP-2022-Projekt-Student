@@ -29,6 +29,12 @@ public interface Extra<C extends Food.Config> {
      */
     void apply(C config);
 
+    /**
+     *
+     * @param config
+     * @param extras
+     * @param <C>
+     */
     static <C> void writeToConfig(C config, List<? extends Extra<? super C>> extras) {
         List<? extends Extra<? super C>> extrasCopy = new ArrayList<>(extras);
         extrasCopy.sort((Comparator<Extra<? super C>>) (o1, o2) -> {

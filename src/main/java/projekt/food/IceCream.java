@@ -35,7 +35,7 @@ public interface IceCream extends Food {
     /**
      * A specific kind of ice cream.
      */
-    interface Variant extends Food.Variant {
+    interface Variant extends Food.Variant<IceCream, IceCream.Config> {
         /**
          * Getter method returns the base flavor.
          * @return the base flavor

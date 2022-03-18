@@ -76,7 +76,7 @@ public final class Extras {
         "Extra Chocolate",
         3,
         c -> {
-            c.price(p -> p.add(new BigDecimal(2.0)));
+            c.flavor(s ->  "Chocolate " + s);
             c.weight(w -> w + 0.1);
         });
 

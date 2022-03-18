@@ -35,7 +35,7 @@ public interface Pizza extends Saucable {
     /**
      * A specific kind of pizza depending on the diameter.
      */
-    interface Variant extends Food.Variant {
+    interface Variant extends Saucable.Variant<Pizza, Pizza.Config> {
         /**
          * Getter method returns the base diameter.
          * @return the base diameter.

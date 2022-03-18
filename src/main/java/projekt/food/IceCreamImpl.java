@@ -10,6 +10,12 @@ import java.util.function.UnaryOperator;
 public class IceCreamImpl implements IceCream {
     public final static IceCream.Variant VANILLA= new IceCreamImpl.Variant(
         "Vanilla", BigDecimal.valueOf(1.5), 0.2, "Vanilla");
+    public final static IceCream.Variant STRAWBERRY= new IceCreamImpl.Variant(
+        "Strawberry", BigDecimal.valueOf(1.5), 0.2, "Strawberry");
+    public final static IceCream.Variant CHOCOLATE= new IceCreamImpl.Variant(
+        "Chocolate", BigDecimal.valueOf(1.5), 0.2, "Chocolate");
+    public final static IceCream.Variant STRACCIATELLA= new IceCreamImpl.Variant(
+        "Stracciatella", BigDecimal.valueOf(1.5), 0.2, "Stracciatella");
 
     /**
      * food config of ice cream.
@@ -214,7 +220,7 @@ public class IceCreamImpl implements IceCream {
         @Override
         public UnaryOperator<String> getFlavorMutator() {
             return flavor -> {
-                String f = flavor;
+                String f = new String(flavor);
                 for (UnaryOperator<String> fm: this.flavorMutators){
                     f = fm.apply(f);
                 }
@@ -293,8 +299,7 @@ public class IceCreamImpl implements IceCream {
          */
         @Override
         public IceCream.Config createEmptyConfig() {
-            return new IceCreamImpl.Config(p -> p, w -> w, f -> f) {
-            };
+            return new IceCreamImpl.Config(p -> p, w -> w, f -> f);
         }
 
         /**

@@ -34,7 +34,7 @@ public interface Saucable extends Food {
     /**
      * A specific kind of base Sauce.
      */
-    interface Variant extends Food.Variant {
+    interface Variant<F extends Saucable, C extends Saucable.Config> extends Food.Variant<F,C> {
         /**
          * Getter method returns the base sauce.
          * @return the base sauce

@@ -1,6 +1,7 @@
 package projekt.food;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.UnaryOperator;
@@ -125,20 +126,20 @@ public class PizzaImpl implements Pizza {
         /**
          * the extra price of config.
          */
-        private List<UnaryOperator<BigDecimal>> priceMutators;
+        private List<UnaryOperator<BigDecimal>> priceMutators = new ArrayList<>();
         /**
          * the extra weight of config.
          */
-        private List<DoubleUnaryOperator> weightMutators;
+        private List<DoubleUnaryOperator> weightMutators = new ArrayList<>();
         /**
          * the extra sauce of config.
          */
-        private List<UnaryOperator<String>> sauceMutators;
+        private List<UnaryOperator<String>> sauceMutators =  new ArrayList<>();
 
         /**
          * the extra diameter of config
          */
-        private List<DoubleUnaryOperator> diameterMutators;
+        private List<DoubleUnaryOperator> diameterMutators = new ArrayList<>();
 
         /**
          * config a pizza.

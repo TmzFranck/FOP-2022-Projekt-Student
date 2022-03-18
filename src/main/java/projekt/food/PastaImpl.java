@@ -1,55 +1,55 @@
 package projekt.food;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.UnaryOperator;
 
 public class PastaImpl implements Pasta {
+
+    public final static Pasta.Variant SPAGHETTI= new PastaImpl.Variant(
+        "Spaghetti", BigDecimal.valueOf(12.5), 0.2, null, 2
+    );
+    public final static Pasta.Variant RIGATONI= new PastaImpl.Variant(
+        "Rigatoni", BigDecimal.valueOf(11.5), 0.2, null, 10
+    );
+    public final static Pasta.Variant RAVIOLI= new PastaImpl.Variant(
+        "Ravioli", BigDecimal.valueOf(11.5), 0.2, null, 40
+    );
+    public final static Pasta.Variant FUSILLI= new PastaImpl.Variant(
+        "Fusilli", BigDecimal.valueOf(11.5), 0.2, null, 15
+    );
+
+    static FoodBuilder<Pasta, Pasta.Config, Pasta.Variant> BUILDER =
+        (c, v, e) -> new PastaImpl(c, v, e);
     /**
-     * price of pasta.
+     * food config of pasta.
      */
-    private final BigDecimal price;
+    private final Pasta.Config pastaConfig;
     /**
-     * weight of pasta.
+     * the pizza variant.
      */
-    private final double weight;
-    /**
-     * food variant of pasta.
-     */
-    private final Food.Variant<Pasta, Pasta.Config> foodVariant;
+    private final Pasta.Variant pastaVariant;
     /**
      * extra of pasta.
      */
-    private final List<Extra<Pasta.Config>> extras;
-    /**
-     * thickness of pasta.
-     */
-    private final double thickness;
-    /**
-     * sauce of pasta
-     */
-    private final String sauce;
+    private final List<? extends Extra<? super Pasta.Config>> extras;
 
     /**
      * config the pasta.
-     * @param price the price of pasta
-     * @param weight the weight of pasta
-     * @param foodVariant the food variant of pasta
-     * @param extras tha extra of pasta
-     * @param thickness the thickness of pasta
-     * @param sauce the sauce of pastaa
+     *
+     * @param pastaConfig  the weight of pasta
+     * @param pastaVariant the food variant of pasta
+     * @param extras       tha extra of pasta
      */
-    public PastaImpl(final BigDecimal price, final double weight,
-                     final Food.Variant<Pasta, Pasta.Config> foodVariant,
-                     final List<Extra<Pasta.Config>> extras,
-                     final double thickness, final String sauce) {
-        this.price = price;
-        this.weight = weight;
-        this.foodVariant = foodVariant;
+    public PastaImpl(Pasta.Config pastaConfig,
+                     Pasta.Variant pastaVariant,
+                     List<? extends Extra<? super Pasta.Config>> extras) {
+
+        this.pastaConfig = pastaConfig;
+        this.pastaVariant = pastaVariant;
         this.extras = extras;
-        this.thickness = thickness;
-        this.sauce = sauce;
     }
 
     /**
@@ -64,7 +64,7 @@ public class PastaImpl implements Pasta {
      */
     @Override
     public BigDecimal getPrice() {
-        return price;
+        return pastaConfig.getPriceMutator().apply(pastaVariant.getBasePrice());
     }
 
     /**
@@ -79,7 +79,7 @@ public class PastaImpl implements Pasta {
      */
     @Override
     public double getWeight() {
-        return weight;
+        return pastaConfig.getWeightMutator().applyAsDouble(pastaVariant.getBaseWeight());
     }
 
     /**
@@ -89,7 +89,7 @@ public class PastaImpl implements Pasta {
      */
     @Override
     public Food.Variant<Pasta, Pasta.Config> getFoodVariant() {
-        return foodVariant;
+        return pastaVariant;
     }
 
     /**
@@ -98,7 +98,7 @@ public class PastaImpl implements Pasta {
      * @return The extras that this food was configured with
      */
     @Override
-    public List<? extends Extra<Pasta.Config>> getExtras() {
+    public List<? extends Extra<? super Pasta.Config>> getExtras() {
         return extras;
     }
 
@@ -107,7 +107,7 @@ public class PastaImpl implements Pasta {
      */
     @Override
     public double getThickness() {
-        return thickness;
+        return pastaConfig.getThicknessMutator().applyAsDouble(pastaVariant.getBaseThickness());
     }
 
     /**
@@ -117,28 +117,35 @@ public class PastaImpl implements Pasta {
      */
     @Override
     public String getSauce() {
-        return sauce;
+        return pastaConfig.getSauceMutator().apply(pastaVariant.getBaseSauce());
     }
 
-    private static class Config implements Saucable.Config {
+    private static class Config implements Pasta.Config {
         /**
          * the extra price of config.
          */
-        private UnaryOperator<BigDecimal> priceMutator;
+        private List<UnaryOperator<BigDecimal>> priceMutators = new ArrayList<>();
         /**
          * the extra weight of config.
          */
-        private DoubleUnaryOperator weightMutator;
+        private List<DoubleUnaryOperator> weightMutators = new ArrayList<>();
         /**
          * the extra sauce of config
          */
-        private UnaryOperator<String> sauceMutator;
+        private List<UnaryOperator<String>> sauceMutators = new ArrayList<>();
+        /**
+         * the extra thickness of config
+         */
+        private List<DoubleUnaryOperator> thicknessMutators = new ArrayList<>();
 
-        private Config(final UnaryOperator<BigDecimal> priceMutator, final DoubleUnaryOperator weightMutator,
-                       final UnaryOperator<String> sauceMutator) {
-            this.priceMutator = priceMutator;
-            this.weightMutator = weightMutator;
-            this.sauceMutator = sauceMutator;
+        private Config(UnaryOperator<BigDecimal> priceMutator,
+                       DoubleUnaryOperator weightMutator,
+                       UnaryOperator<String> sauceMutator,
+                       DoubleUnaryOperator thicknessMutator) {
+            this.priceMutators.add(priceMutator);
+            this.weightMutators.add(weightMutator);
+            this.sauceMutators.add(sauceMutator);
+            this.thicknessMutators.add(thicknessMutator);
         }
 
         /**
@@ -154,7 +161,7 @@ public class PastaImpl implements Pasta {
          */
         @Override
         public void price(UnaryOperator<BigDecimal> priceMutator) {
-            this.priceMutator = price -> priceMutator.apply(this.priceMutator.apply(price));
+            priceMutators.add(priceMutator);
         }
 
         /**
@@ -169,7 +176,13 @@ public class PastaImpl implements Pasta {
          */
         @Override
         public UnaryOperator<BigDecimal> getPriceMutator() {
-            return priceMutator;
+            return preis -> {
+                BigDecimal p = preis;
+                for (UnaryOperator<BigDecimal> pm : this.priceMutators) {
+                    p = pm.apply(p);
+                }
+                return p;
+            };
         }
 
         /**
@@ -185,7 +198,7 @@ public class PastaImpl implements Pasta {
          */
         @Override
         public void weight(DoubleUnaryOperator weightMutator) {
-            this.weightMutator = weight -> weightMutator.applyAsDouble(this.weightMutator.applyAsDouble(weight));
+            weightMutators.add(weightMutator);
         }
 
         /**
@@ -200,7 +213,13 @@ public class PastaImpl implements Pasta {
          */
         @Override
         public DoubleUnaryOperator getWeightMutator() {
-            return weightMutator;
+            return weight -> {
+                double w = weight;
+                for (DoubleUnaryOperator wm : this.weightMutators) {
+                    w = wm.applyAsDouble(w);
+                }
+                return w;
+            };
         }
 
         /**
@@ -211,7 +230,7 @@ public class PastaImpl implements Pasta {
          */
         @Override
         public void sauce(UnaryOperator<String> sauceMutator) {
-            this.sauceMutator = sauce -> sauceMutator.apply(this.sauceMutator.apply(sauce));
+            sauceMutators.add(sauceMutator);
         }
 
         /**
@@ -222,7 +241,145 @@ public class PastaImpl implements Pasta {
          */
         @Override
         public UnaryOperator<String> getSauceMutator() {
-            return sauceMutator;
+            return sauce -> {
+                String s = new String(sauce);
+                for (UnaryOperator<String> sm : this.sauceMutators) {
+                    s = sm.apply(s);
+                }
+                return s;
+            };
+        }
+
+        /**
+         * chain the current thickness with given thicknessMutator.
+         * and save it internally
+         *
+         * @param thicknessMutator the given thicknessMutator
+         */
+        @Override
+        public void thickness(DoubleUnaryOperator thicknessMutator) {
+            thicknessMutators.add(thicknessMutator);
+        }
+
+        /**
+         * getter method returns the internally saved.
+         * thicknessMutator
+         *
+         * @return internally saved thicknessMutator
+         */
+        @Override
+        public DoubleUnaryOperator getThicknessMutator() {
+            return thickness -> {
+                double t = thickness;
+                for (DoubleUnaryOperator tm : this.thicknessMutators) {
+                    t = tm.applyAsDouble(t);
+                }
+                return t;
+            };
+        }
+    }
+
+    private static class Variant implements Pasta.Variant {
+
+        private String name;
+        private BigDecimal basePrice;
+        private double baseWeight;
+        private String baseSauce;
+        private double baseThickness;
+        private FoodType<Pasta, Pasta.Config> foodType;
+
+        public Variant(String name, BigDecimal basePrice, double baseWeight, String baseSauce, double baseThickness) {
+            this.name = name;
+            this.basePrice = basePrice;
+            this.baseWeight = baseWeight;
+            this.baseSauce = baseSauce;
+            this.baseThickness = baseThickness;
+            this.foodType = FoodTypes.PASTA;
+        }
+
+        /**
+         * The name of this variant.
+         *
+         * <p>
+         * This may be something similar to {@code "Pizza Margherita"}.
+         * </p>
+         *
+         * @return The name of this variant
+         */
+        @Override
+        public String getName() {
+            return this.name;
+        }
+
+        /**
+         * The food type in which this variant is grouped.
+         *
+         * <p>
+         * For example, if this variant was named {@code "Pizza Margherita"}, the matching food type would be {@code "Pizza"}.
+         * </p>
+         *
+         * @return The food type of this variant
+         */
+        @Override
+        public FoodType getFoodType() {
+            return this.foodType;
+        }
+
+        /**
+         * The base price of this variant.
+         *
+         * @return The base price of this variant
+         */
+        @Override
+        public BigDecimal getBasePrice() {
+            return this.basePrice;
+        }
+
+        /**
+         * The base weight of this variant.
+         *
+         * @return The weight price of this variant
+         */
+        @Override
+        public double getBaseWeight() {
+            return this.baseWeight;
+        }
+
+        /**
+         * Creates an empty {@link Config} for this variant.
+         *
+         * @return An empty {@link Config} for this variant
+         */
+        @Override
+        public Pasta.Config createEmptyConfig() {
+            return new PastaImpl.Config(p -> p, w -> w, s -> s, t -> t);
+        }
+
+        public Pasta create(List<? extends Extra<? super Pasta.Config>> extras) {
+            Pasta.Config config = createEmptyConfig();
+            Extra.writeToConfig(config, extras);
+            return BUILDER.build(config, this, extras);
+        }
+
+
+        /**
+         * Getter method returns teh base Thickness of the pasta.
+         *
+         * @return the base thickness.
+         */
+        @Override
+        public double getBaseThickness() {
+            return this.baseThickness;
+        }
+
+        /**
+         * Getter method returns the base sauce.
+         *
+         * @return the base sauce
+         */
+        @Override
+        public String getBaseSauce() {
+            return this.baseSauce;
         }
     }
 }

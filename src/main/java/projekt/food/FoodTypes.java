@@ -35,5 +35,22 @@ public final class FoodTypes {
         put("Ice Cream", ICE_CREAM);
     }};
 
-    // TODO: implement static initializer for the menu in the H2.13
+
+    /**
+     *     implement static initializer for the menu in the H2.13
+     */
+    static {
+        ICE_CREAM.addFoodVariant(IceCreamImpl.VANILLA);
+        ICE_CREAM.addFoodVariant(IceCreamImpl.STRAWBERRY);
+        ICE_CREAM.addFoodVariant(IceCreamImpl.CHOCOLATE);
+        ICE_CREAM.addFoodVariant(IceCreamImpl.STRACCIATELLA);
+
+        PASTA.addFoodVariant(PastaImpl.SPAGHETTI);
+        PASTA.addFoodVariant(PastaImpl.RIGATONI);
+        PASTA.addFoodVariant(PastaImpl.RAVIOLI);
+        PASTA.addFoodVariant(PastaImpl.FUSILLI);
+
+
+
+    }
 }

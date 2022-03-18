@@ -29,7 +29,7 @@ public class ExtraImpl<C extends Food.Config> implements Extra<C> {
         this.priority = priority;
         this.configMutator = configMutator;
     }
-    
+
     /**
      * The name of this extra.
      *

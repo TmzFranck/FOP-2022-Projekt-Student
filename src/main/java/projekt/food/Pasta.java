@@ -34,7 +34,7 @@ public interface Pasta extends Saucable {
     /**
      * A specific kind of Pasta depending on the thickness.
      */
-    interface Variant extends Saucable.Variant {
+    interface Variant extends Saucable.Variant<Pasta, Pasta.Config> {
         /**
          * Getter method returns teh base Thickness of the pasta.
          * @return the base thickness.

@@ -1,53 +1,51 @@
 package projekt.food;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.UnaryOperator;
 
 public class PizzaImpl implements Pizza {
+    static FoodBuilder<Pizza, Pizza.Config, Pizza.Variant> BUILDER =
+        (c, v, e) -> new PizzaImpl(c, v, e);
+
+    public final static Pizza.Variant MARGHERITA= new PizzaImpl.Variant(
+        "Margherita", BigDecimal.valueOf(9.75), 0.8, "Tomato", 30.0
+    );
+    public final static Pizza.Variant HAWAII= new PizzaImpl.Variant(
+        "Hawaii", BigDecimal.valueOf(13.75), 1.0, "Tomato", 30.0
+    );
+    public final static Pizza.Variant RUCOLA= new PizzaImpl.Variant(
+        "Rucola", BigDecimal.valueOf(14.50), 0.9, "Tomato", 30.0
+    );
+    public final static Pizza.Variant BBQ= new PizzaImpl.Variant(
+        "BBQ", BigDecimal.valueOf(14.50), 1.1, "BBQ", 30.0
+    );
+
     /**
-     * the diameter of pizza.
+     * food config of pizza.
      */
-    private final double diameter;
-    /**
-     * the price of pizza.
-     */
-    private final BigDecimal price;
-    /**
-     * the sauce of pizza.
-     */
-    private final String sauce;
-    /**
-     * the weight of pizza.
-     */
-    private final double weight;
+    private final Pizza.Config pizzaConfig;
     /**
      * the pizza variant.
      */
-    private final Food.Variant<Pizza, Pizza.Config> pizzaVariant;
+    private final Pizza.Variant pizzaVariant;
     /**
      * the extra of pizza.
      */
-    private final List<Extra<Pizza.Config>> extras;
+    private final List<? extends Extra<? super Pizza.Config>> extras;
 
     /**
      * config the pizza.
-     * @param diameter the diameter of pizzaa
-     * @param price the price of pizza
-     * @param sauce the sauce of pizza
-     * @param weight weight of pizza
+     * @param pizzaConfig the pizza config
      * @param pizzaVariant the pizza variant
      * @param extras the extra of pizza
      */
-    public PizzaImpl(final double diameter, final BigDecimal price,
-                     final String sauce, final double weight,
-                     final Food.Variant<Pizza, Pizza.Config> pizzaVariant,
-                     final List<Extra<Pizza.Config>> extras) {
-        this.diameter = diameter;
-        this.price = price;
-        this.sauce = sauce;
-        this.weight = weight;
+    public PizzaImpl(Pizza.Config pizzaConfig,
+                     Pizza.Variant pizzaVariant,
+                     List<? extends Extra<? super Pizza.Config>> extras) {
+        this.pizzaConfig = pizzaConfig;
         this.pizzaVariant = pizzaVariant;
         this.extras = extras;
 
@@ -65,7 +63,7 @@ public class PizzaImpl implements Pizza {
      */
     @Override
     public BigDecimal getPrice() {
-        return price;
+        return pizzaConfig.getPriceMutator().apply(pizzaVariant.getBasePrice());
     }
 
     /**
@@ -80,7 +78,7 @@ public class PizzaImpl implements Pizza {
      */
     @Override
     public double getWeight() {
-        return weight;
+        return pizzaConfig.getWeightMutator().applyAsDouble(pizzaVariant.getBaseWeight());
     }
 
     /**
@@ -99,7 +97,7 @@ public class PizzaImpl implements Pizza {
      * @return The extras that this food was configured with
      */
     @Override
-    public List<? extends Extra<Pizza.Config>> getExtras() {
+    public List<? extends Extra<? super Pizza.Config>> getExtras() {
         return extras;
     }
 
@@ -108,7 +106,7 @@ public class PizzaImpl implements Pizza {
      */
     @Override
     public double getDiameter() {
-        return diameter;
+        return pizzaConfig.getDiameterMutator().applyAsDouble(pizzaVariant.getBaseDiameter());
     }
 
     /**
@@ -118,25 +116,30 @@ public class PizzaImpl implements Pizza {
      */
     @Override
     public String getSauce() {
-        return sauce;
+        return pizzaConfig.getSauceMutator().apply(pizzaVariant.getBaseSauce());
     }
 
     /**
      *
      */
-    private static class Config implements Saucable.Config {
+    private static class Config implements Pizza.Config {
         /**
          * the extra price of config.
          */
-        private UnaryOperator<BigDecimal> priceMutator;
+        private List<UnaryOperator<BigDecimal>> priceMutators = new ArrayList<>();
         /**
          * the extra weight of config.
          */
-        private DoubleUnaryOperator weightMutator;
+        private List<DoubleUnaryOperator> weightMutators = new ArrayList<>();
         /**
          * the extra sauce of config.
          */
-        private UnaryOperator<String> sauceMutator;
+        private List<UnaryOperator<String>> sauceMutators =  new ArrayList<>();
+
+        /**
+         * the extra diameter of config
+         */
+        private List<DoubleUnaryOperator> diameterMutators = new ArrayList<>();
 
         /**
          * config a pizza.
@@ -144,12 +147,14 @@ public class PizzaImpl implements Pizza {
          * @param weightMutator the extra weight of config
          * @param sauceMutator the extra sauce of config
          */
-        public Config(final UnaryOperator<BigDecimal> priceMutator,
-                      final DoubleUnaryOperator weightMutator,
-                      final UnaryOperator<String> sauceMutator) {
-            this.priceMutator = priceMutator;
-            this.weightMutator = weightMutator;
-            this.sauceMutator = sauceMutator;
+        public Config(UnaryOperator<BigDecimal> priceMutator,
+                      DoubleUnaryOperator weightMutator,
+                      UnaryOperator<String> sauceMutator,
+                      DoubleUnaryOperator diameterMutator) {
+            this.priceMutators.add(priceMutator);
+            this.weightMutators.add(weightMutator);
+            this.sauceMutators.add(sauceMutator);
+            this.diameterMutators.add(diameterMutator);
         }
 
 
@@ -166,7 +171,7 @@ public class PizzaImpl implements Pizza {
          */
         @Override
         public void price(UnaryOperator<BigDecimal> priceMutator) {
-            this.priceMutator = price -> priceMutator.apply(this.priceMutator.apply(price));
+            priceMutators.add(priceMutator);
         }
 
         /**
@@ -181,7 +186,13 @@ public class PizzaImpl implements Pizza {
          */
         @Override
         public UnaryOperator<BigDecimal> getPriceMutator() {
-            return priceMutator;
+            return preis ->{
+                BigDecimal p = preis;
+                for (UnaryOperator<BigDecimal> pm: this.priceMutators){
+                    p = pm.apply(p);
+                }
+                return p;
+            };
         }
 
         /**
@@ -197,7 +208,7 @@ public class PizzaImpl implements Pizza {
          */
         @Override
         public void weight(DoubleUnaryOperator weightMutator) {
-            this.weightMutator = weight -> weightMutator.applyAsDouble(this.weightMutator.applyAsDouble(weight));
+            weightMutators.add(weightMutator);
         }
 
         /**
@@ -212,7 +223,13 @@ public class PizzaImpl implements Pizza {
          */
         @Override
         public DoubleUnaryOperator getWeightMutator() {
-            return weightMutator;
+            return weight ->{
+                double w = weight;
+                for (DoubleUnaryOperator wm: this.weightMutators){
+                    w = wm.applyAsDouble(w);
+                }
+                return w;
+            };
         }
 
         /**
@@ -223,7 +240,7 @@ public class PizzaImpl implements Pizza {
          */
         @Override
         public void sauce(UnaryOperator<String> sauceMutator) {
-            this.sauceMutator = sauce -> sauceMutator.apply(this.sauceMutator.apply(sauce));
+            sauceMutators.add(sauceMutator);
         }
 
         /**
@@ -234,7 +251,158 @@ public class PizzaImpl implements Pizza {
          */
         @Override
         public UnaryOperator<String> getSauceMutator() {
-            return sauceMutator;
+            return sauce -> {
+                String s = new String(sauce);
+                for (UnaryOperator<String> sm: this.sauceMutators){
+                    s = sm.apply(s);
+                }
+                return s;
+            };
+        }
+
+        /**
+         * chain the current diameter with given diameterMutator.
+         * and save it internally
+         *
+         * @param diameterMutator the given diameterMutator
+         */
+        @Override
+        public void diameter(DoubleUnaryOperator diameterMutator) {
+            diameterMutators.add(diameterMutator);
+        }
+
+        /**
+         * getter method returns the internally saved.
+         * diameterMutator
+         *
+         * @return internally saved diameterMutator
+         */
+        @Override
+        public DoubleUnaryOperator getDiameterMutator() {
+            return diameter ->{
+                double d = diameter;
+                for (DoubleUnaryOperator dm: this.diameterMutators){
+                    d = dm.applyAsDouble(d);
+                }
+                return d;
+            };
+        }
+    }
+
+    private static class Variant implements Pizza.Variant{
+        public Variant(String name, BigDecimal basePrice, double baseWeight, String baseSauce, double baseDiameter) {
+            this.name = name;
+            this.basePrice = basePrice;
+            this.baseWeight = baseWeight;
+            this.baseSauce = baseSauce;
+            this.baseDiameter = baseDiameter;
+            this.foodType = FoodTypes.PIZZA;
+        }
+
+        private String name;
+        private BigDecimal basePrice;
+        private double baseWeight;
+        private String baseSauce;
+        private double baseDiameter;
+        private FoodType<Pizza, Pizza.Config> foodType;
+
+        /**
+         * The name of this variant.
+         *
+         * <p>
+         * This may be something similar to {@code "Pizza Margherita"}.
+         * </p>
+         *
+         * @return The name of this variant
+         */
+        @Override
+        public String getName() {
+            return this.name;
+        }
+
+        /**
+         * The food type in which this variant is grouped.
+         *
+         * <p>
+         * For example, if this variant was named {@code "Pizza Margherita"}, the matching food type would be {@code "Pizza"}.
+         * </p>
+         *
+         * @return The food type of this variant
+         */
+        @Override
+        public FoodType<Pizza, Pizza.Config> getFoodType() {
+            return this.foodType;
+        }
+
+        /**
+         * The base price of this variant.
+         *
+         * @return The base price of this variant
+         */
+        @Override
+        public BigDecimal getBasePrice() {
+            return this.basePrice;
+        }
+
+        /**
+         * The base weight of this variant.
+         *
+         * @return The weight price of this variant
+         */
+        @Override
+        public double getBaseWeight() {
+            return this.baseWeight;
+        }
+
+        /**
+         * Creates an empty {@link Config} for this variant.
+         *
+         * @return An empty {@link Config} for this variant
+         */
+        @Override
+        public Pizza.Config createEmptyConfig() {
+            return new PizzaImpl.Config(p -> p, w -> w, s -> s, d -> d);
+        }
+
+        /**
+         * Creates a new instance of {@link Food} described by this variant, its base values and modifications defined by the
+         * provided list of {@link Extra Extras}.
+         *
+         * <p>
+         * The provided extras are applied to an instance of {@link Config}. After this config has
+         * been fully "configured" by the extras, the base values from this variant are supplied to the config's mutators to
+         * calculate the food's concrete values. Providing an empty list will create a food with the base values for this
+         * variant.
+         * </p>
+         *
+         * @param extras The list of {@link Extra Extras} to configure the resultant {@link Food}
+         * @return An instance of {@link Food} based on the values from this variant and configured by the provided extras
+         */
+        @Override
+        public Pizza create(List<? extends Extra<? super Pizza.Config>> extras) {
+            Pizza.Config config = createEmptyConfig();
+            Extra.writeToConfig(config, extras);
+            return BUILDER.build(config, this, extras);
+        }
+
+        /**
+         * Getter method returns the base diameter.
+         *
+         * @return the base diameter.
+         */
+        @Override
+        public double getBaseDiameter() {
+            return this.baseDiameter;
+        }
+
+        /**
+         * Getter method returns the base sauce.
+         *
+         * @return the base sauce
+         */
+        @Override
+        public String getBaseSauce() {
+            return this.baseSauce;
         }
     }
 }

@@ -1,47 +1,48 @@
 package projekt.food;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.UnaryOperator;
 
 public class IceCreamImpl implements IceCream {
+    public final static IceCream.Variant VANILLA= new IceCreamImpl.Variant(
+        "Vanilla", BigDecimal.valueOf(1.5), 0.2, "Vanilla");
+    public final static IceCream.Variant STRAWBERRY= new IceCreamImpl.Variant(
+        "Strawberry", BigDecimal.valueOf(1.5), 0.2, "Strawberry");
+    public final static IceCream.Variant CHOCOLATE= new IceCreamImpl.Variant(
+        "Chocolate", BigDecimal.valueOf(1.5), 0.2, "Chocolate");
+    public final static IceCream.Variant STRACCIATELLA= new IceCreamImpl.Variant(
+        "Stracciatella", BigDecimal.valueOf(1.5), 0.2, "Stracciatella");
+
     /**
-     * price of ice cream.
+     * food config of ice cream.
      */
-    private final BigDecimal price;
-    /**
-     * flavor of ice cream.
-     */
-    private final String flavor;
-    /**
-     * weight of ice cream.
-     */
-    private final double weight;
+    private final IceCream.Config foodConfig;
     /**
      * food variant of ice cream.
      */
-    private final Food.Variant<IceCream, IceCream.Config> foodVariant;
+    private final IceCream.Variant foodVariant;
     /**
      * extra of ice cream.
      */
-    private final List<Extra<IceCream.Config>> extras;
+    private final List<? extends Extra<? super IceCream.Config>> extras;
+
+    static FoodBuilder<IceCream, IceCream.Config, IceCream.Variant> BUILDER =
+        (c, v, e) -> new IceCreamImpl(c, v, e);
 
     /**
      * config the ice cream.
-     * @param price the price of ice cream
-     * @param flavor the flavor of ice cream
-     * @param weight the weight of ice cream
+     * @param foodVariant the food config of ice cream
      * @param foodVariant the food variant of ice cream
      * @param extras extra of ice cream
      */
-    public IceCreamImpl(final BigDecimal price, final String flavor,
-                        final double weight, final Food.Variant<IceCream,IceCream.Config> foodVariant,
-                        final List<Extra<IceCream.Config>> extras) {
-        this.price = price;
-        this.flavor = flavor;
-        this.weight = weight;
+    public IceCreamImpl(IceCream.Config foodConfig,
+                        IceCream.Variant foodVariant,
+                        List<? extends Extra<? super IceCream.Config>> extras) {
+        this.foodConfig = foodConfig;
         this.foodVariant = foodVariant;
         this.extras = extras;
     }
@@ -58,7 +59,7 @@ public class IceCreamImpl implements IceCream {
      */
     @Override
     public BigDecimal getPrice() {
-        return price;
+        return foodConfig.getPriceMutator().apply(foodVariant.getBasePrice());
     }
 
     /**
@@ -73,7 +74,7 @@ public class IceCreamImpl implements IceCream {
      */
     @Override
     public double getWeight() {
-        return weight;
+        return foodConfig.getWeightMutator().applyAsDouble(foodVariant.getBaseWeight());
     }
 
     /**
@@ -92,7 +93,7 @@ public class IceCreamImpl implements IceCream {
      * @return The extras that this food was configured with
      */
     @Override
-    public List<Extra<IceCream.Config>> getExtras() {
+    public List<? extends Extra<? super IceCream.Config>> getExtras() {
         return extras;
     }
 
@@ -101,23 +102,28 @@ public class IceCreamImpl implements IceCream {
      */
     @Override
     public String getFlavor() {
+        String baseFlavor = foodVariant.getBaseFlavor();
+        String flavor = foodConfig.getFlavorMutator().apply(baseFlavor);
         return flavor;
     }
 
-    private static class Config implements Food.Config {
+    private static class Config implements IceCream.Config {
 
         /**
          * the extra price for the configuration.
          */
-        private UnaryOperator<BigDecimal> priceMutator;
+        private List<UnaryOperator<BigDecimal>> priceMutators = new ArrayList<>();
         /**
          * the extra weight for the configuration.
          */
-        private DoubleUnaryOperator weightMutator;
+        private List<DoubleUnaryOperator> weightMutators = new ArrayList<>();
 
-        private Config(final UnaryOperator<BigDecimal> priceMutator, final DoubleUnaryOperator weightMutator) {
-            this.priceMutator = priceMutator;
-            this.weightMutator = weightMutator;
+        private List<UnaryOperator<String>> flavorMutators = new ArrayList<>();
+
+        private Config(UnaryOperator<BigDecimal> priceMutator, DoubleUnaryOperator weightMutator, UnaryOperator<String> flavorMutator) {
+            this.priceMutators.add(priceMutator);
+            this.weightMutators.add(weightMutator);
+            this.flavorMutators.add(flavorMutator);
         }
 
         /**
@@ -133,7 +139,7 @@ public class IceCreamImpl implements IceCream {
          */
         @Override
         public void price(UnaryOperator<BigDecimal> priceMutator) {
-            this.priceMutator = price -> priceMutator.apply(this.priceMutator.apply(price));
+            priceMutators.add(priceMutator);
         }
 
         /**
@@ -148,7 +154,13 @@ public class IceCreamImpl implements IceCream {
          */
         @Override
         public UnaryOperator<BigDecimal> getPriceMutator() {
-            return priceMutator;
+            return preis ->{
+                BigDecimal p = preis;
+                for (UnaryOperator<BigDecimal> pm: this.priceMutators){
+                    p = pm.apply(p);
+                }
+                return p;
+            };
         }
 
         /**
@@ -164,7 +176,7 @@ public class IceCreamImpl implements IceCream {
          */
         @Override
         public void weight(DoubleUnaryOperator weightMutator) {
-            this.weightMutator = weight -> weightMutator.applyAsDouble(this.weightMutator.applyAsDouble(weight));
+            weightMutators.add(weightMutator);
         }
 
         /**
@@ -179,7 +191,149 @@ public class IceCreamImpl implements IceCream {
          */
         @Override
         public DoubleUnaryOperator getWeightMutator() {
-            return weightMutator;
+            return weight ->{
+                double w = weight;
+                for (DoubleUnaryOperator wm: this.weightMutators){
+                    w = wm.applyAsDouble(w);
+                }
+                return w;
+            };
+        }
+
+        /**
+         * chain the current flavor with given flavorMutator.
+         * and save it internally
+         *
+         * @param flavorMutator the given flavorMutator
+         */
+        @Override
+        public void flavor(UnaryOperator<String> flavorMutator) {
+            this.flavorMutators.add(flavorMutator);
+        }
+
+        /**
+         * getter method returns the internally saved.
+         * flavorMutator
+         *
+         * @return internally saved flavorMutator
+         */
+        @Override
+        public UnaryOperator<String> getFlavorMutator() {
+            return flavor -> {
+                String f = new String(flavor);
+                for (UnaryOperator<String> fm: this.flavorMutators){
+                    f = fm.apply(f);
+                }
+                return f;
+            };
         }
     }
+
+    private static class Variant implements IceCream.Variant {
+
+        public Variant(String name, BigDecimal basePrice, double baseWeight, String baseFlavor) {
+            this.baseFlavor = baseFlavor;
+            this.name = name;
+            this.basePrice = basePrice;
+            this.baseWeight = baseWeight;
+            this.foodType = FoodTypes.ICE_CREAM;
+        }
+
+        private String name;
+        private BigDecimal basePrice;
+        private double baseWeight;
+        private String baseFlavor;
+        private FoodType<IceCream, IceCream.Config> foodType;
+        /**
+         * The name of this variant.
+         *
+         * <p>
+         * This may be something similar to {@code "Pizza Margherita"}.
+         * </p>
+         *
+         * @return The name of this variant
+         */
+        @Override
+        public String getName() {
+            return this.name;
+        }
+
+        /**
+         * The food type in which this variant is grouped.
+         *
+         * <p>
+         * For example, if this variant was named {@code "Pizza Margherita"}, the matching food type would be {@code "Pizza"}.
+         * </p>
+         *
+         * @return The food type of this variant
+         */
+        @Override
+        public FoodType<IceCream, IceCream.Config> getFoodType() {
+            return this.foodType;
+        }
+
+        /**
+         * The base price of this variant.
+         *
+         * @return The base price of this variant
+         */
+        @Override
+        public BigDecimal getBasePrice() {
+            return this.basePrice;
+        }
+
+        /**
+         * The base weight of this variant.
+         *
+         * @return The weight price of this variant
+         */
+        @Override
+        public double getBaseWeight() {
+            return this.baseWeight;
+        }
+
+        /**
+         * Creates an empty {@link Config} for this variant.
+         *
+         * @return An empty {@link Config} for this variant
+         */
+        @Override
+        public IceCream.Config createEmptyConfig() {
+            return new IceCreamImpl.Config(p -> p, w -> w, f -> f);
+        }
+
+        /**
+         * Creates a new instance of {@link Food} described by this variant, its base values and modifications defined by the
+         * provided list of {@link Extra Extras}.
+         *
+         * <p>
+         * The provided extras are applied to an instance of {@link Config}. After this config has
+         * been fully "configured" by the extras, the base values from this variant are supplied to the config's mutators to
+         * calculate the food's concrete values. Providing an empty list will create a food with the base values for this
+         * variant.
+         * </p>
+         *
+         * @param extras The list of {@link Extra Extras} to configure the resultant {@link Food}
+         * @return An instance of {@link Food} based on the values from this variant and configured by the provided extras
+         */
+        @Override
+        public IceCream create(List<? extends Extra<? super IceCream.Config>> extras) {
+            IceCream.Config config = createEmptyConfig();
+            Extra.writeToConfig(config, extras);
+            return BUILDER.build(config, this, extras);
+        }
+
+
+        /**
+         * Getter method returns the base flavor.
+         *
+         * @return the base flavor
+         */
+        @Override
+        public String getBaseFlavor() {
+            return baseFlavor;
+        }
+    }
+
+
 }

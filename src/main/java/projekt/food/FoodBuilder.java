@@ -9,7 +9,7 @@ import java.util.List;
  * @param <V> variant typ
  */
 @FunctionalInterface
-public interface FoodBuilder<F extends Food, C extends Food.Config, V extends Food.Variant<F, C>> {
+public interface FoodBuilder<F extends Food, C extends Food.Config, V extends Food.Variant<F,C>> {
     /**
      * build Food.
      * @param config configuration of food
@@ -17,6 +17,5 @@ public interface FoodBuilder<F extends Food, C extends Food.Config, V extends Fo
      * @param extras of food
      * @return food.
      */
-    F build(C config, V variant, List<? extends Extras> extras);
-
+    F build(C config, V variant, List<? extends Extra<? super C>> extras);
 }

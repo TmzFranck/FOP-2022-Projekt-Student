@@ -2,7 +2,7 @@ package projekt.food;
 
 import java.util.function.Consumer;
 
-public class ExtraImpl<C extends Food.Config> implements Extra {
+public class ExtraImpl<C extends Food.Config> implements Extra<C> {
     /**
      * the name of extra.
      */
@@ -14,7 +14,7 @@ public class ExtraImpl<C extends Food.Config> implements Extra {
     /**
      * the config of extra.
      */
-    private final Consumer<? extends Food.Config> configMutator;
+    private final Consumer<C> configMutator;
 
     /**
      * configure the extra portion.
@@ -22,14 +22,14 @@ public class ExtraImpl<C extends Food.Config> implements Extra {
      * @param priority priority  of extra
      * @param configMutator config of extra
      */
-    public ExtraImpl(final String name,
-                     final int priority,
-                     final Consumer<? extends Food.Config> configMutator) {
+    public ExtraImpl(String name,
+                     int priority,
+                     Consumer<C> configMutator) {
         this.name = name;
         this.priority = priority;
         this.configMutator = configMutator;
     }
-
+    
     /**
      * The name of this extra.
      *
@@ -54,7 +54,7 @@ public class ExtraImpl<C extends Food.Config> implements Extra {
      * @param config
      */
     @Override
-    public void apply(final Food.Config config) {
-        // TODO implement apply.
+    public void apply(C config) {
+        configMutator.accept(config);
     }
 }

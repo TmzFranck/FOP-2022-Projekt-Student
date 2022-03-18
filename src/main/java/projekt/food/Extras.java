@@ -35,7 +35,7 @@ public final class Extras {
         3,
         c -> {
             c.price(p -> p.add(new BigDecimal(0.5)));
-            c.sauce(s -> "Spicy ");
+            c.sauce(s -> "Spicy " + s);
         });
 
     public static Extra EXTRA_SAUCE = new ExtraImpl<Saucable.Config>(
@@ -44,7 +44,7 @@ public final class Extras {
         c -> {
             c.price(p -> p.multiply(new BigDecimal(1.25)));
             c.weight(w -> w + 0.12);
-            c.sauce(s -> "Extra ");
+            c.sauce(s -> "Extra " + s);
         });
 
     public static Extra NO_SAUCE = new ExtraImpl<Saucable.Config>(

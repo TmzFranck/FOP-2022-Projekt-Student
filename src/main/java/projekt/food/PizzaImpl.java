@@ -13,7 +13,7 @@ public class PizzaImpl implements Pizza {
     public final static Pizza.Variant MARGHERITA= new PizzaImpl.Variant(
         "Margherita", BigDecimal.valueOf(9.75), 0.8, "Tomato", 30.0
     );
-    public final static Pizza.Variant Hawaii= new PizzaImpl.Variant(
+    public final static Pizza.Variant HAWAII= new PizzaImpl.Variant(
         "Hawaii", BigDecimal.valueOf(13.75), 1.0, "Tomato", 30.0
     );
     public final static Pizza.Variant RUCOLA= new PizzaImpl.Variant(

@@ -242,6 +242,9 @@ public class PastaImpl implements Pasta {
         @Override
         public UnaryOperator<String> getSauceMutator() {
             return sauce -> {
+                if (sauce == null){
+                    return null;
+                }
                 String s = new String(sauce);
                 for (UnaryOperator<String> sm : this.sauceMutators) {
                     s = sm.apply(s);

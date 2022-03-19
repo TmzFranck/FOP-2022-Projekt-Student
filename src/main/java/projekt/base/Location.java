@@ -63,6 +63,5 @@ public class Location {
         return new Location(this.getX() - location.getX(),
             this.getY() - location.getY());
     }
-    
 }
 

@@ -45,7 +45,7 @@ public interface Extra<C extends Food.Config> {
                 return o1.getName().compareTo(o2.getName());
             }
         });
-        for (Extra<? super C> e : extrasCopy){
+        for (Extra<? super C> e : extrasCopy) {
             e.apply(config);
         }
     }

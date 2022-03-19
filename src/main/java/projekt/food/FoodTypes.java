@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * food types.
+ */
 public final class FoodTypes {
     final static FoodType PIZZA = new FoodTypeImpl<Pizza, Pizza.Config>(
         "Pizza",

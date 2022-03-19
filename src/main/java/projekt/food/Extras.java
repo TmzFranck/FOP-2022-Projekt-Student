@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * extras.
+ */
 public final class Extras {
     public static Extra EXTRA_HAM = new ExtraImpl<Pizza.Config>(
         "Extra ham",

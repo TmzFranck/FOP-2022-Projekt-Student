@@ -2,6 +2,10 @@ package projekt.food;
 
 import java.util.function.Consumer;
 
+/**
+ * extra of client.
+ * @param <C>
+ */
 public class ExtraImpl<C extends Food.Config> implements Extra<C> {
     /**
      * the name of extra.

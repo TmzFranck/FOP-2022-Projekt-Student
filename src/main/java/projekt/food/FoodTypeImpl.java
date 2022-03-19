@@ -3,6 +3,11 @@ package projekt.food;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * type food.
+ * @param <F>
+ * @param <C>
+ */
 public class FoodTypeImpl<F extends Food, C extends Food.Config> implements FoodType<F,C> {
 
     private final String name;
